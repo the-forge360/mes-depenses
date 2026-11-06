@@ -16,6 +16,15 @@ export function formaterDateCourte(date: string): string {
   return formatDateCourte.format(new Date(annee, mois - 1, jour))
 }
 
+/**
+ * Part du total (0 à 1) en pourcentage entier : 0.8 → « 80 % ». Une part non
+ * nulle qui s'arrondirait à 0 affiche « < 1 % ». Espace insécable avant « % ».
+ */
+export function formaterPart(part: number): string {
+  const pourcent = Math.round(part * 100)
+  return part > 0 && pourcent === 0 ? '< 1 %' : `${pourcent} %`
+}
+
 /** Somme des montants (entiers en FCFA). */
 export function calculerTotal(depenses: readonly { montant: number }[]): number {
   return depenses.reduce((total, depense) => total + depense.montant, 0)

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { FiltreMois } from '@/composants/FiltreMois'
+import { GraphiqueCategories } from '@/composants/GraphiqueCategories'
 import { ListeDepenses } from '@/composants/ListeDepenses'
 import { useSessionConnectee } from '@/lib/contexte-session'
 import { listerDepensesDuMois } from '@/lib/depenses-api'
@@ -66,6 +67,10 @@ export function Accueil() {
           {depenses.isSuccess ? formaterMontant(calculerTotal(depenses.data)) : '…'}
         </p>
       </section>
+
+      {depenses.isSuccess && depenses.data.length > 0 && (
+        <GraphiqueCategories depenses={depenses.data} />
+      )}
 
       <Link to="/depenses/nouvelle" className={cn(buttonVariants(), 'h-14 w-full text-lg')}>
         + Ajouter une dépense
