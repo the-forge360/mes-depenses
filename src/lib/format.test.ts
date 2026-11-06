@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculerTotal, formaterDateCourte, formaterMontant } from './format'
+import { calculerTotal, formaterDateCourte, formaterMontant, formaterPart } from './format'
 
 /** Remplace les espaces insécables (U+00A0, U+202F) par des espaces simples. */
 const espacesSimples = (texte: string) => texte.replace(/[  ]/g, ' ')
@@ -41,5 +41,17 @@ describe('calculerTotal', () => {
 
   it('liste vide : 0', () => {
     expect(calculerTotal([])).toBe(0)
+  })
+})
+
+describe('formaterPart', () => {
+  it.each([
+    [0.8, '80 %'],
+    [0, '0 %'],
+    [0.004, '< 1 %'],
+    [0.005, '1 %'],
+    [1, '100 %'],
+  ])('%s → « %s »', (part, attendu) => {
+    expect(espacesSimples(formaterPart(part))).toBe(attendu)
   })
 })
