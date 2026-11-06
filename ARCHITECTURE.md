@@ -42,8 +42,8 @@ L'app est un ensemble de fichiers statiques hébergés sur **Vercel**. Elle parl
 | Graphique | **Barres horizontales en CSS**, sans librairie | 3 valeurs à comparer : pas besoin de dépendance. |
 | Formatage | **`Intl.NumberFormat('fr-FR')`, `Intl.DateTimeFormat('fr-FR')`** | « 1 250 000 FCFA », « novembre 2026 », sans librairie. |
 | Base de données | **Supabase PostgreSQL** | Données de l'app, sécurité ligne par ligne (RLS). |
-| Authentification | **Supabase Auth**, e-mail + mot de passe | Session persistante : le gérant se connecte une seule fois. |
-| E-mails d'auth | **Brevo** (SMTP, offre gratuite 300 e-mails/jour) | Confirmation de compte, réinitialisation du mot de passe. |
+| Authentification | **Supabase Auth**, e-mail + mot de passe | Session persistante : le gérant se connecte une seule fois. Pas d'e-mail de confirmation à l'inscription : le compte est utilisable immédiatement. |
+| E-mails d'auth | **Brevo** (SMTP, offre gratuite 300 e-mails/jour) | Réinitialisation du mot de passe ; invitation d'un collaborateur (V1). |
 | PWA | **vite-plugin-pwa** | Raccourci sur l'écran d'accueil, ouverture rapide. |
 | Hébergement | **Vercel** | Déploiement automatique à chaque push sur Git. |
 | Tests | **Vitest** | Calculs : total du mois, bornes de mois, formatage des montants. |
