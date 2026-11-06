@@ -5,6 +5,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { RouteConnectee, RoutePublique } from '@/composants/routes'
 import { Accueil } from '@/ecrans/Accueil'
 import { InscriptionConnexion } from '@/ecrans/InscriptionConnexion'
+import { ModifierDepense } from '@/ecrans/ModifierDepense'
 import { NouvelleDepense } from '@/ecrans/NouvelleDepense'
 import { FournisseurSession } from '@/lib/session'
 import './index.css'
@@ -21,6 +22,7 @@ const routeur = createBrowserRouter([
     children: [
       { path: '/', element: <Accueil /> },
       { path: '/depenses/nouvelle', element: <NouvelleDepense /> },
+      { path: '/depenses/:id', element: <ModifierDepense /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

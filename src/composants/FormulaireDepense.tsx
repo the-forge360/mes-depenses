@@ -16,6 +16,8 @@ type Props = {
   enCours: boolean
   /** Message affiché si l'envoi a échoué ; la saisie est conservée. */
   erreurEnvoi?: string | null
+  /** Valeurs de départ (modification). Sans elles : date du jour, champs vides. */
+  valeursInitiales?: SaisieDepense
 }
 
 const DESCRIPTION_MAX = 100
@@ -30,14 +32,17 @@ function MessageErreur({ champ, message }: { champ: Champ; message?: string }) {
 }
 
 /** Formulaire de dépense (ajout ; servira aussi à la modification). */
-export function FormulaireDepense({ onValider, enCours, erreurEnvoi }: Props) {
+export function FormulaireDepense({ onValider, enCours, erreurEnvoi, valeursInitiales }: Props) {
   const [aujourdhui] = useState(aujourdhuiLocal)
-  const [saisie, setSaisie] = useState<SaisieDepense>({
-    date: aujourdhui,
-    montant: '',
-    categorie: '',
-    description: '',
-  })
+  const [saisie, setSaisie] = useState<SaisieDepense>(
+    () =>
+      valeursInitiales ?? {
+        date: aujourdhui,
+        montant: '',
+        categorie: '',
+        description: '',
+      },
+  )
   const [erreurs, setErreurs] = useState<Erreurs>({})
 
   function modifier(champ: Champ, valeur: string) {

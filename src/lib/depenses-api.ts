@@ -49,3 +49,59 @@ export async function listerDepensesDuMois(
   if (error) throw error
   return data as DepenseEnregistree[]
 }
+
+const COLONNES = 'id, date, montant, categorie, description'
+const FORMAT_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/** La dépense n'existe pas, a été supprimée, ou n'est pas visible (autre entreprise). */
+export class DepenseIntrouvable extends Error {
+  constructor() {
+    super('Cette dépense n’existe pas ou a été supprimée.')
+    this.name = 'DepenseIntrouvable'
+  }
+}
+
+/**
+ * Une dépense par son identifiant, ou `null` si elle est introuvable. La RLS
+ * rend invisible une dépense d'une autre entreprise : même résultat, rien n'est révélé.
+ */
+export async function lireDepense(
+  client: SupabaseClient,
+  id: string,
+): Promise<DepenseEnregistree | null> {
+  // Adresse mal formée (/depenses/abc) : introuvable, sans requête
+  // (Postgres répondrait par une erreur de type, affichée comme un échec réseau).
+  if (!FORMAT_UUID.test(id)) return null
+  const { data, error } = await client.from('depenses').select(COLONNES).eq('id', id).maybeSingle()
+  if (error) throw error
+  return data as DepenseEnregistree | null
+}
+
+/**
+ * Enregistre les nouvelles valeurs d'une dépense. N'envoie ni l'entreprise ni
+ * l'auteur ; `modifie_le` est mis à jour par la base. Lève DepenseIntrouvable
+ * si aucune ligne n'a été modifiée (un update ne recrée jamais la dépense).
+ */
+export async function modifierDepense(
+  client: SupabaseClient,
+  id: string,
+  depense: Depense,
+): Promise<void> {
+  const { date, montant, categorie, description } = depense
+  const { data, error } = await client
+    .from('depenses')
+    .update({ date, montant, categorie, description })
+    .eq('id', id)
+    .select('id')
+  if (error) throw error
+  if (!data || data.length === 0) throw new DepenseIntrouvable()
+}
+
+/**
+ * Supprime une dépense. Si elle n'existe déjà plus, c'est un succès : le
+ * résultat voulu est atteint (utile après une réponse perdue).
+ */
+export async function supprimerDepense(client: SupabaseClient, id: string): Promise<void> {
+  const { error } = await client.from('depenses').delete().eq('id', id)
+  if (error) throw error
+}
