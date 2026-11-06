@@ -1,0 +1,16 @@
+# Dépendances et build
+node_modules/
+dist/
+
+# Variables d'environnement (secrets) : on ne publie jamais les vrais .env
+.env
+.env.*
+!.env.example
+
+# Réglages Claude Code personnels (les réglages partagés de .claude/ sont publiés)
+.claude/settings.local.json
+
+# Système / éditeur
+.DS_Store
+Thumbs.db
+*.log
