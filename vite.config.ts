@@ -31,5 +31,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    // Fuseau UTC+1 (zone FCFA) pour tester les dates locales.
+    env: { TZ: 'Africa/Douala' },
   },
 })
