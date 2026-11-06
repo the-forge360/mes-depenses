@@ -5,6 +5,7 @@ import { FormulaireDepense } from '@/composants/FormulaireDepense'
 import type { Depense } from '@/lib/depense'
 import { ajouterDepense } from '@/lib/depenses-api'
 import { genererIdentifiant } from '@/lib/identifiant'
+import { moisDeLaDate } from '@/lib/mois'
 import { useSessionConnectee } from '@/lib/contexte-session'
 import { exigerSupabase } from '@/lib/supabase'
 
@@ -18,9 +19,12 @@ export function NouvelleDepense() {
   const enregistrement = useMutation({
     mutationFn: (depense: Depense) =>
       ajouterDepense(exigerSupabase(), { ...depense, id, entreprise_id: entrepriseId }),
-    onSuccess: () => {
+    onSuccess: (_resultat, depense) => {
       queryClient.invalidateQueries({ queryKey: ['depenses'] })
-      navigate('/', { state: { message: 'Dépense enregistrée' } })
+      // Retour sur le mois de la dépense, pour qu'elle soit visible dans la liste.
+      navigate(`/?mois=${moisDeLaDate(depense.date)}`, {
+        state: { message: 'Dépense enregistrée' },
+      })
     },
   })
 
