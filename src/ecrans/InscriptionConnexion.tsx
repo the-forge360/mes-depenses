@@ -17,6 +17,7 @@ const LONGUEUR_MIN_MOT_DE_PASSE = 8
  */
 export function InscriptionConnexion() {
   const [mode, setMode] = useState<Mode>('connexion')
+  const [nom, setNom] = useState('')
   const [email, setEmail] = useState('')
   const [motDePasse, setMotDePasse] = useState('')
   const [erreur, setErreur] = useState<string | null>(null)
@@ -34,6 +35,11 @@ export function InscriptionConnexion() {
     setErreur(null)
     setInformation(null)
 
+    if (mode === 'inscription' && !nom.trim()) {
+      setErreur('Veuillez indiquer votre nom.')
+      return
+    }
+
     if (mode === 'inscription' && motDePasse.length < LONGUEUR_MIN_MOT_DE_PASSE) {
       setErreur('Le mot de passe doit contenir au moins 8 caractères.')
       return
@@ -43,7 +49,11 @@ export function InscriptionConnexion() {
     const auth = exigerSupabase().auth
     const { data, error } =
       mode === 'inscription'
-        ? await auth.signUp({ email, password: motDePasse })
+        ? await auth.signUp({
+            email,
+            password: motDePasse,
+            options: { data: { nom: nom.trim() } },
+          })
         : await auth.signInWithPassword({ email, password: motDePasse })
     setEnCours(false)
 
@@ -89,6 +99,21 @@ export function InscriptionConnexion() {
       </div>
 
       <form onSubmit={valider} className="flex flex-col gap-5">
+        {inscription && (
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="nom">Nom</Label>
+            <Input
+              id="nom"
+              type="text"
+              required
+              autoComplete="name"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              className="h-12 text-base"
+            />
+          </div>
+        )}
+
         <div className="flex flex-col gap-2">
           <Label htmlFor="email">E-mail</Label>
           <Input
